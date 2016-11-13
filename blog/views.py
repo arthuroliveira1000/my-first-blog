@@ -1,15 +1,20 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from .models import Post
 from .forms import PostForm
 from django.utils import timezone
-
+ 
 def post_list(request):
-    posts = Post.objects.all()
+    posts = get_list_or_404(Post.objects.all())
     return render(request, 'blog/post_list.html', {'posts': posts})
 
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'blog/post_detail.html', {'post': post})
+
+def post_delete(request, pk):
+    post = get_object_or_404(Post, pk=pk).delete()
+    posts = get_list_or_404(Post.objects.all())
+    return render(request, 'blog/post_list.html', {'posts': posts})
 
 def post_new(request):
     if request.method == "POST":
