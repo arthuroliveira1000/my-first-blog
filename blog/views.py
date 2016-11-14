@@ -2,7 +2,15 @@ from django.shortcuts import render, get_object_or_404, redirect, get_list_or_40
 from .models import Post
 from .forms import PostForm
 from django.utils import timezone
- 
+from django.http import HttpResponseNotFound
+def post_search(request):
+    if request.method == 'POST':
+        search = request.POST.get('search')
+        if search:
+            posts = get_list_or_404(Post.objects.filter(title__icontains=search))
+            return render(request, 'blog/post_list.html', {'posts': posts})
+            print("Entro aqui")
+
 def post_list(request):
     posts = get_list_or_404(Post.objects.all())
     return render(request, 'blog/post_list.html', {'posts': posts})
